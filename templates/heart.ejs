@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Heart Disease Prediction</title>
+</head>
+<style>
+	body {
+		background-color: #f5f5f5;
+		font-family: Arial, sans-serif;
+	}
+	h1 {
+		color: #d81b60;
+		text-align: center;
+		margin-top: 50px;
+	}
+	form {
+		width: 500px;
+		margin: 50px auto;
+		background-color: #ffffff;
+		padding: 30px;
+		border-radius: 10px;
+		box-shadow: 0 0 10px rgba(0,0,0,0.2);
+	}
+	label {
+		display: block;
+		margin-bottom: 10px;
+		color: #333333;
+		font-size: 18px;
+		font-weight: bold;
+	}
+	input, select {
+		display: block;
+		width: 100%;
+		height: 40px;
+		font-size: 18px;
+		padding: 5px 10px;
+		border: 2px solid #cccccc;
+		border-radius: 5px;
+		margin-bottom: 20px;
+		box-sizing: border-box;
+	}
+	button {
+		background-color: #d81b60;
+		color: #ffffff;
+		font-size: 20px;
+		border: none;
+		border-radius: 5px;
+		padding: 10px 20px;
+		cursor: pointer;
+		transition: background-color 0.3s ease;
+	}
+	button:hover {
+		background-color: #c2185b;
+	}
+	#result {
+		color: #333333;
+		font-size: 24px;
+		font-weight: bold;
+		margin-top: 30px;
+		text-align: center;
+	}
+</style>
+<body>
+	<h1>Heart Disease Prediction</h1>
+	<form id="patient-form">
+		<label for="age">Age:</label>
+		<input type="number" name="age" id="age"><br>
+
+		<label for="sex">Sex:</label>
+		<select name="sex" id="sex">
+			<option value="0">Female</option>
+			<option value="1">Male</option>
+		</select><br>
+
+		<label for="cp">Chest Pain Type:</label>
+		<input type="number" name="cp" id="cp"><br>
+
+		<label for="trestbps">Resting Blood Pressure:</label>
+		<input type="number" name="trestbps" id="trestbps"><br>
+
+		<label for="chol">Serum Cholesterol:</label>
+		<input type="number" name="chol" id="chol"><br>
+
+		<label for="fbs">Fasting Blood Sugar:</label>
+		<select name="fbs" id="fbs">
+			<option value="0">Less than 120 mg/dl</option>
+			<option value="1">Greater than or equal to 120 mg/dl</option>
+		</select><br>
+
+        <label for="restecg">Resting Electrocardiographic Results (0-2):</label>
+        <input type="number" id="restecg" name="restecg" required><br>
+
+        <label for="thalach">Maximum Heart Rate Achieved:</label>
+        <input type="number" id="thalach" name="thalach" required><br>
+
+        <label for="exang">Exercise Induced Angina (0=No, 1=Yes):</label>
+        <input type="number" id="exang" name="exang" required><br>
+
+        <label for="oldpeak">ST Depression Induced by Exercise:</label>
+        <input type="number" id="oldpeak" name="oldpeak" required><br>
+
+        <label for="slope">Slope of the Peak Exercise ST Segment (0-2):</label>
+        <input type="number" id="slope" name="slope" required><br>
+
+        <label for="ca">Number of Major Vessels Colored by Fluoroscopy (0-3):</label>
+        <input type="number" id="ca" name="ca" required><br>
+
+        <label for="thal">Thalassemia (0-3):</label>
+        <input type="number" id="thal" name="thal" required><br>
+
+		<button type="button" onclick="predict()">Predict</button>
+	</form>
+	<div>
+		
+		<p>Prediction: <span id="prediction"></span></p>
+	  </div>
+	  
+
+	<div id="result"></div>
+
+	<script>
+		async function predict() {
+			const data = {
+				"age": parseInt(document.getElementById("age").value),
+				"sex": parseInt(document.getElementById("sex").value),
+				"cp": parseInt(document.getElementById("cp").value),
+				"trestbps": parseInt(document.getElementById("trestbps").value),
+				"chol": parseInt(document.getElementById("chol").value),
+				"fbs": parseInt(document.getElementById("fbs").value),
+                "restecg": parseInt(document.getElementById("restecg").value),
+                "thalach": parseInt(document.getElementById("thalach").value),
+                "exang": parseInt(document.getElementById("exang").value),
+                "oldpeak": parseFloat(document.getElementById("oldpeak").value),
+                "slope": parseInt(document.getElementById("slope").value),
+                "ca": parseInt(document.getElementById("ca").value),
+                "thal": parseInt(document.getElementById("thal").value)
+			};
+
+			const response = await fetch('/predict', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			});
+
+			const result = await response.json();
+			document.getElementById("result").innerHTML = result.prediction;
+
+			function submitPrediction() {
+  // Get the input data from the form
+  var feature = document.getElementById("feature").value;
+
+  // Send an HTTP POST request to the FastAPI endpoint
+  fetch("http://localhost:8000/predict", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      feature: feature,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // Update the HTML page with the prediction result
+      document.getElementById("prediction").innerHTML = data.result;
+    });
+}
+
+		}
+	</script>
+</body>
+</html>
+
+
