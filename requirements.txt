@@ -82,7 +82,7 @@ sniffio
 stack-data
 starlette
 tensorboard
-tensorboard-data-server==
+tensorboard-data-server
 tensorboard-plugin-wit
 tensorflow-estimator
 tensorflow-io-gcs-filesystem
